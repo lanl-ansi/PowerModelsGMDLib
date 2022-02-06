@@ -1,14 +1,15 @@
 param (
-    $InputPath,
-    $GeoPath,
-    $BusSubPath,
-    $OutputPath 
+    $InputPath="$PWD\RTS-GMLC-GIC-PNW.pwb",
+    $GeoPath="$PWD\gic_east.csv",
+    $BusSubPath="$PWD\RTS-GML-GIC_Bus-Sub-Mapping.csv",
+    $OutputPath="$PWD\RTS-GMLC-GIC-East.pwb" 
 )
 
-Write-Host " In: $InputPath"
-Write-Host "Geo: $GeoPath"
-Write-Host "Out: $OutputPath"
-
+Write-Output " In: $InputPath"
+Write-Output "Geo: $GeoPath"
+Write-Output "Sub: $BusSubPath"
+Write-Output "Out: $OutputPath"
+# Write-Output ''
 
 If (Test-Path $OutputPath) {
     Remove-Item "$OutputPath" | Out-Null
@@ -50,34 +51,50 @@ $SimAuto.CreateIfNotFound = $True
 Test-SimAutoOutput -Output $SimAuto.OpenCase($InputPath) -ErrorMessage "There was an error opening ${InputPath}"
 Invoke-SimAutoScript -Instance $SimAuto -Command 'EnterMode(EDIT)'
 
-$Geo = Get-Content $GeoPath | ConvertFrom-Json
+$Geo = Get-Content $GeoPath | ConvertFrom-Csv
+$BusSubs = Get-Content $BusSubPath | Select-Object -Skip 1 | ConvertFrom-Csv
 
-Foreach ($Sub in $Geo.substations.features) {
-    $SubKeys = "Number", "Name", "Longitude", "Latitude"
-    $SubVals = $Sub.properties.id, $Sub.properties.name, $Sub.geometry.coordinates[0], $Sub.geometry.coordinates[1]
-    # Write-Host "Adding Substation $SubVals"
-    Test-SimAutoOutput $SimAuto.ChangeParametersSingleElement("Substation", $SubKeys, $SubVals)
+$BusLocations = @{}
 
-    foreach ($Bus in $Sub.properties.buses) {
-        $BusKeys = "Number", "SubNumber"
-        $BusVals = $Bus.id, $Sub.properties.id
-        # Write-Host "  Adding bus $BusVals"
-        Test-SimAutoOutput $SimAuto.ChangeParametersSingleElement("Bus", $BusKeys, $BusVals)
-    }
+foreach ($Bus in $Geo) {
+    $BusNum = [Int] $Bus.'Bus ID'
+
+    $BusLoc = @{}
+    $BusLoc.X = [Double] $Bus.X
+    $BusLoc.Y = [Double] $Bus.Y
+    $x = $BusLoc.X
+    $y = $BusLoc.Y
+    $BusLocations[$BusNum] = $BusLoc
+    Write-Output "Setting Location for bus $BusNum to ($x, $y)"
 }
 
-Test-SimAutoOutput $SimAuto.ProcessAuxFile("$HOME\Repos\gmd-tools\auxfiles\BusSubView.aux")
-Test-SimAutoOutput $SimAuto.ProcessAuxFile("$HOME\Repos\gmd-tools\auxfiles\SubGeoView.aux")
-# Test-SimAutoOutput $SimAuto.RunScriptCommand("OpenOneline(""$BaseOnelinePath"")") -ErrorMessage "Can't open $BaseOnelinePath"
-# Test-SimAutoOutput $SimAuto.RunScriptCommand("LoadAXD(""$HOME\Repos\gmd-tools\auxfiles\AutoInsertSubOnelineObjects.axd"", ""OCONUS"", YES)")
-# Test-SimAutoOutput $SimAuto.RunScriptCommand("SaveOneline(""$OnelinePath"", ""OCONUS"", PWB)") 
+$SubLocations = @{}
+
+foreach ($Bus in $BusSubs) {
+    $BusNum = [Int] $Bus.Number
+    $SubNum = [Int] $Bus.'Sub Num'
+    Write-Output "Changing location for sub $SubNum Associated with bus $BusNum"
+    $SubLocations[$SubNum] = $BusLocations[$BusNum]
+}
+
+# Write-Host ''
+
+foreach ($SubNum in $SubLocations.Keys) {
+    $SubLoc = $SubLocations[$BusNum]
+    $x = $SubLoc.X
+    $y = $SubLoc.Y
+
+    $SubKeys = "Number", "Longitude", "Latitude"
+    $SubVals = $SubNum, $x, $y
+    Write-Output "Setting location for substation $SubNum to ($x, $y)"
+    Test-SimAutoOutput $SimAuto.ChangeParametersSingleElement("Substation", $SubKeys, $SubVals)
+}
 
 $Out = $SimAuto.SaveCase($OutputPath, "PWB21", $true) 
 $Err = $Out[0]
 
-
 If ($Err.Length -gt 0) {
-    Write-Host "Error saving ${OutputPath}: $Err"
+    Write-Output "Error saving ${OutputPath}: $Err"
 }
 
 $SimAuto = $null
