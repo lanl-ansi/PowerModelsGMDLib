@@ -68,6 +68,7 @@ foreach ($Bus in $Geo) {
     Write-Output "Setting Location for bus $BusNum to ($x, $y)"
 }
 
+Write-Host ''
 $SubLocations = @{}
 
 foreach ($Bus in $BusSubs) {
@@ -77,7 +78,7 @@ foreach ($Bus in $BusSubs) {
     $SubLocations[$SubNum] = $BusLocations[$BusNum]
 }
 
-# Write-Host ''
+Write-Host ''
 
 foreach ($SubNum in $SubLocations.Keys) {
     $SubLoc = $SubLocations[$BusNum]
@@ -85,7 +86,7 @@ foreach ($SubNum in $SubLocations.Keys) {
     $y = $SubLoc.Y
 
     $SubKeys = "Number", "Longitude", "Latitude"
-    $SubVals = $SubNum, $x, $y
+    $SubVals = $SubNum, $SubLoc.X, $SubLoc.Y
     Write-Output "Setting location for substation $SubNum to ($x, $y)"
     Test-SimAutoOutput $SimAuto.ChangeParametersSingleElement("Substation", $SubKeys, $SubVals)
 }
