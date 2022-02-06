@@ -1,9 +1,8 @@
 param (
     $InputPath,
     $GeoPath,
-    $BaseOnelinePath,
-    $OutputPath,
-    $OnelinePath 
+    $BusSubPath,
+    $OutputPath 
 )
 
 Write-Host " In: $InputPath"
