@@ -54,6 +54,7 @@ Invoke-SimAutoScript -Instance $SimAuto -Command 'EnterMode(EDIT)'
 $Geo = Get-Content $GeoPath | ConvertFrom-Csv
 $BusSubs = Get-Content $BusSubPath | Select-Object -Skip 1 | ConvertFrom-Csv
 
+Write-Output ''
 $BusLocations = @{}
 
 foreach ($Bus in $Geo) {
@@ -68,20 +69,25 @@ foreach ($Bus in $Geo) {
     Write-Output "Setting Location for bus $BusNum to ($x, $y)"
 }
 
-Write-Host ''
+Write-Output ''
 $SubLocations = @{}
 
 foreach ($Bus in $BusSubs) {
     $BusNum = [Int] $Bus.Number
     $SubNum = [Int] $Bus.'Sub Num'
-    Write-Output "Changing location for sub $SubNum Associated with bus $BusNum"
+    $BusLoc = $BusLocations[$BusNum]
+    if ($null -eq $BusLoc) { continue }
+    $x = $BusLoc.X
+    $y = $BusLoc.Y
+
+    Write-Output "Changing location for sub $SubNum Associated with bus $BusNum to ($x, $y)"
     $SubLocations[$SubNum] = $BusLocations[$BusNum]
 }
 
-Write-Host ''
+Write-Output ''
 
 foreach ($SubNum in $SubLocations.Keys) {
-    $SubLoc = $SubLocations[$BusNum]
+    $SubLoc = $SubLocations[$SubNum]
     $x = $SubLoc.X
     $y = $SubLoc.Y
 
