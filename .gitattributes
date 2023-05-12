@@ -1,3 +1,5 @@
 *.pwb filter=lfs diff=lfs merge=lfs -text
 *.PWB filter=lfs diff=lfs merge=lfs -text
 *.pwd filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.ipynb filter=lfs diff=lfs merge=lfs -text
