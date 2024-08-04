@@ -39,4 +39,5 @@ include("test_cases.jl")
 @testset "PowerModelsGMDLib" begin
     # include("ac_data.jl")
     include("activsg200_matpower.jl")
+    include("activsg2000_mod_matpower.jl")
 end
