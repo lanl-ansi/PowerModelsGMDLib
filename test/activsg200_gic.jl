@@ -14,7 +14,9 @@ import Juniper
 import LinearAlgebra
 import SparseArrays
 using Test
+import GZip
 import Memento
+
 Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
 Memento.setlevel!(Memento.getlogger(_IM), "error")
 Memento.setlevel!(Memento.getlogger(_PM), "error")
@@ -27,17 +29,21 @@ ipopt_solver = JuMP.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "p
 juniper_solver = JuMP.optimizer_with_attributes(Juniper.Optimizer, "nl_solver" => _PM.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "print_level" => 0, "sb" => "yes"), "log_levels" => [])
 setting = Dict{String,Any}("output" => Dict{String,Any}("branch_flows" => true))
 
+raw_file = "../data/ACTIVSg200/pti/ACTIVSg200.raw.gz" 
+gic_file = "../data/ACTIVSg200/pti/activsg200.gic.gz" 
+csv_file = "../data/ACTIVSg200/pti/activsg200.csv.gz" 
 
-data = raw"U:\gmd-tools-10k_fix\gmd-tools-10k_fix\activsg200.m"
-case = _PM.parse_file(data)
-_PMGMD.add_gmd_3w_branch!(case)
-# sol= _PMGMD.solve_gmd(case) # linear solver
-# sol=  _PMGMD.solve_gmd(case, ipopt_solver; setting=setting) # for opt solver
-sol = _PMGMD.solve_gmd("../test/data/pti/activsg200.raw", "../test/data/gic/activsg200.gic", "../test/data/lines/activsg200.csv") # linear solver
+raw_io = GZip.open(raw_file)
+gic_io = GZip.open(gic_file)
+csv_io = GZip.open(csv_file)
 
+sol = _PMGMD.solve_gmd(raw_io, gic_io, csv_io)
+
+close(raw_io)
+close(gic_io)
+close(csv_io)
 
 high_error = 1e-2 # abs(value) >= .0001
-
 low_error = 1 # abs(value) < .0001
 
 @testset "solve of gmd" begin

@@ -14,8 +14,8 @@ import Juniper
 import LinearAlgebra
 import SparseArrays
 using Test
-import Memento
 import GZip
+import Memento
 
 Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
 Memento.setlevel!(Memento.getlogger(_IM), "error")
@@ -33,6 +33,7 @@ data = "../data/ACTIVSg200/activsg200.m.gz"
 io = GZip.open(data)
 case = _PM.parse_matpower(io)
 close(io)
+
 _PMGMD.add_gmd_3w_branch!(case)
 
 sol= _PMGMD.solve_gmd(case) # linear solver
