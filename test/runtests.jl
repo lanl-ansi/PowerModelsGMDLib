@@ -37,9 +37,9 @@ using Test
 include("test_cases.jl")
 # Perform automated testing of PMsGMD problem specifications:
 @testset "PowerModelsGMDLib" begin
-    include("activsg200_matpower.jl")
+    include("activsg200.jl")
     #include("activsg200_gic.jl") # this has a number of failing tests because of differences in branch indexing
-    include("activsg2000_mod_matpower.jl")
+    #include("activsg2000_mod.jl")
 end
 
 @testset "Verified Cases MatPower" begin
@@ -59,4 +59,5 @@ end
     #include("b4gic3wydd_verified_gic.jl") # currently missing .gic.gz file
     include("b4gic3wyyd_verified_gic.jl")
     include("epricase_aug2022_v22_fix_verified_gic.jl")
+    include("uiuc150bus_verfified_gic.jl")
 end

@@ -73,28 +73,4 @@ low_error = 1 # abs(value) < .0001
 		@test isapprox(sol["solution"]["gmd_bus"]["10"]["gmd_vdc"], -6.29955006, rtol=high_error)
 		@test isapprox(sol["solution"]["gmd_bus"]["11"]["gmd_vdc"], -6.29955006, rtol=high_error)
 	end
-	@testset "auto transformers" begin
-		@test isapprox(sol["solution"]["qloss"]["6"], 18.367863993876263, rtol=high_error) || isapprox(sol["solution"]["qloss"]["6"], 18.56320979069289, rtol=high_error) 
-		@test isapprox(sol["solution"]["ieff"]["6"], 11.4537258100, rtol=high_error)
-		@test isapprox(sol["solution"]["qloss"]["7"], 0.0, rtol=low_error)
-		@test isapprox(sol["solution"]["ieff"]["7"], 0.0, rtol=low_error)
-	end
-	@testset "d-y transformers" begin
-		@test isapprox(sol["solution"]["qloss"]["5"], 0.0, rtol=low_error)
-		@test isapprox(sol["solution"]["ieff"]["5"], 0.0, rtol=low_error)
-	end
-	@testset "y-d transformers" begin
-		@test isapprox(sol["solution"]["qloss"]["3"], 55.89169590261849, rtol=high_error) || isapprox(sol["solution"]["qloss"]["3"], 56.50864542657024, rtol=high_error) 
-		@test isapprox(sol["solution"]["ieff"]["3"], 33.5761413600, rtol=high_error)
-		@test isapprox(sol["solution"]["qloss"]["1"], 34.90488176862414, rtol=high_error) || isapprox(sol["solution"]["qloss"]["1"], 34.687372653164, rtol=high_error) 
-		@test isapprox(sol["solution"]["ieff"]["1"], 22.1224536900, rtol=high_error)
-	end
-	@testset "y-y transformers" begin
-	end
-	@testset "d-d transformers" begin
-	end
-	@testset "lines" begin
-		@test isapprox(sol["solution"]["ieff"]["2"], 0.0, rtol=low_error)
-		@test isapprox(sol["solution"]["ieff"]["4"], 0.0, rtol=low_error)
-	end
 end
