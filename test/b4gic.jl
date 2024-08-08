@@ -1,4 +1,3 @@
-
 using PowerModelsGMD
 const _PMGMD = PowerModelsGMD
 
@@ -9,18 +8,13 @@ import PowerModels
 const _PM = PowerModels
 
 import JSON
-
 import JuMP
-
 import Ipopt
-
 import Juniper
-
 import LinearAlgebra
-
 import SparseArrays
-
 using Test
+using GZip
 
 import Memento
 Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
@@ -35,17 +29,19 @@ ipopt_solver = JuMP.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "p
 juniper_solver = JuMP.optimizer_with_attributes(Juniper.Optimizer, "nl_solver" => _PM.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "print_level" => 0, "sb" => "yes"), "log_levels" => [])
 setting = Dict{String,Any}("output" => Dict{String,Any}("branch_flows" => true))
 
+#data = "../data/b4gic.m"
+#case = _PM.parse_file(data)
 
-
-data = "../test/data/matpower/b4gic.m"
-
-case = _PM.parse_file(data)
+data = "../data/verified_cases/4Bus/b4gic.m.gz"
+io = GZip.open(data)
+case = _PM.parse_matpower(io)
+close(io)
 
 sol = _PMGMD.solve_gmd(case)
 
 max_error = 1e-2
 
-@testset "linear solve of gmd" begin
+@testset "b4gic linear solve of gmd" begin
 	@testset "auto transformers" begin
 	end
 	@testset "y-d transformers" begin
