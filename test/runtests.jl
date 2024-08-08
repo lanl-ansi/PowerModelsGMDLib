@@ -50,10 +50,13 @@ end
     #include("activsg500_verified.jl")
     #include("activsg2000_mod_verified.jl")
     #include("activsg10k_verified.jl")
+    include("b4gic3wydd_verified.jl")
+    include("b4gic3wyyd_verified.jl")
 end
 
 @testset "Verified Cases RAW/GIC" begin
     include("b4gic_verified_gic.jl")
-    include("b4gic3wydd_verified.jl")
-    include("b4gic3wyyd_verified.jl")
+    #include("b4gic3wydd_verified_gic.jl") # currently missing .gic.gz file
+    include("b4gic3wyyd_verified_gic.jl")
+    include("epricase_aug2022_v22_fix_verified_gic.jl")
 end
