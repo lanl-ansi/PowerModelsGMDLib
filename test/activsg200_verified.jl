@@ -44,10 +44,9 @@ sol= _PMGMD.solve_gmd(case) # linear solver
 # sol=  _PMGMD.solve_gmd(case, ipopt_solver; setting=setting) # for opt solver
 
 high_error = 1e-2 # abs(value) >= .0001
-
 low_error = 1 # abs(value) < .0001
 
-@testset "solve of gmd" begin
+@testset "Verified 200-bus solve of GMD" begin
 	@testset "dc bus voltage" begin
 		@test isapprox(sol["solution"]["gmd_bus"]["1"]["gmd_vdc"], -0.00038335, rtol=high_error)
 		@test isapprox(sol["solution"]["gmd_bus"]["2"]["gmd_vdc"], -0.00042969, rtol=high_error)

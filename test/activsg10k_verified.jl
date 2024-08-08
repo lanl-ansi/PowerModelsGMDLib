@@ -14,7 +14,9 @@ import Juniper
 import LinearAlgebra
 import SparseArrays
 using Test
+using GZip
 import Memento
+
 Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
 Memento.setlevel!(Memento.getlogger(_IM), "error")
 Memento.setlevel!(Memento.getlogger(_PM), "error")
@@ -28,17 +30,23 @@ juniper_solver = JuMP.optimizer_with_attributes(Juniper.Optimizer, "nl_solver" =
 setting = Dict{String,Any}("output" => Dict{String,Any}("branch_flows" => true))
 
 
-data = "../test/data/matpower/activsg10k.m"
-case = _PM.parse_file(data)
+# data = "../test/data/matpower/activsg10k.m"
+# case = _PM.parse_file(data)
+
+data = "../data/verified_cases/10KBus/activsg10k.m.gz"
+io = GZip.open(data)
+case = _PM.parse_matpower(io)
+close(io)
+
 _PMGMD.add_gmd_3w_branch!(case)
+
 sol= _PMGMD.solve_gmd(case) # linear solver
 # sol=  _PMGMD.solve_gmd(case, ipopt_solver; setting=setting) # for opt solver
 
 high_error = 1e-2 # abs(value) >= .0001
-
 low_error = 1 # abs(value) < .0001
 
-@testset "solve of gmd" begin
+@testset "Verified 10k-bus solve of GMD" begin
 	@testset "dc bus voltage" begin
 		@test isapprox(sol["solution"]["gmd_bus"]["1"]["gmd_vdc"], -0.00069172, rtol=high_error)
 		@test isapprox(sol["solution"]["gmd_bus"]["2"]["gmd_vdc"], -0.00027354, rtol=high_error)
