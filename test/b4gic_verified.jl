@@ -15,8 +15,8 @@ import LinearAlgebra
 import SparseArrays
 using Test
 using GZip
-
 import Memento
+
 Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
 Memento.setlevel!(Memento.getlogger(_IM), "error")
 Memento.setlevel!(Memento.getlogger(_PM), "error")
@@ -41,7 +41,7 @@ sol = _PMGMD.solve_gmd(case)
 
 max_error = 1e-2
 
-@testset "b4gic linear solve of gmd" begin
+@testset "Verified B4GIC linear solve of GMD" begin
 	@testset "auto transformers" begin
 	end
 	@testset "y-d transformers" begin

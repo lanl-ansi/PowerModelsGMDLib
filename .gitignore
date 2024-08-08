@@ -1,3 +1,4 @@
+# uncompressed test case data
 *.pwb
 *.PWB
 *.pwd
@@ -8,5 +9,9 @@
 *.json
 *.geojson
 *.csv
+
+# temp files
+*.swp
+
 .dupver/
 Manifest.toml

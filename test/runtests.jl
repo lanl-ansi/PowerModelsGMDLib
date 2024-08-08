@@ -43,7 +43,10 @@ include("test_cases.jl")
 end
 
 @testset "Verified Cases" begin
-    include("b4gic.jl")
+    include("b4gic_verified.jl")
+    include("epricase_aug2022_v22_fix_verified.jl")
+    include("uiuc150bus_verified.jl")
+    include("activsg200_verified.jl")
     #include("activsg200_gic.jl") # this has a number of failing tests because of differences in branch indexing
     #include("activsg2000_mod_matpower.jl")
 end
