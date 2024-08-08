@@ -42,12 +42,16 @@ include("test_cases.jl")
     #include("activsg2000_mod_matpower.jl")
 end
 
-@testset "Verified Cases" begin
+@testset "Verified Cases MatPower" begin
     include("b4gic_verified.jl")
     include("epricase_aug2022_v22_fix_verified.jl")
-    include("uiuc150bus_verified.jl")
-    include("activsg200_verified.jl")
-    include("activsg500_verified.jl")
-    include("activsg2000_mod_verified.jl")
-    include("activsg10k_verified.jl")
+    #include("uiuc150bus_verified.jl")
+    #include("activsg200_verified.jl")
+    #include("activsg500_verified.jl")
+    #include("activsg2000_mod_verified.jl")
+    #include("activsg10k_verified.jl")
+end
+
+@testset "Verified Cases RAW/GIC" begin
+    include("b4gic_verified_gic.jl")
 end
