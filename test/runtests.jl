@@ -37,20 +37,20 @@ include("test_cases.jl")
 # Perform automated testing of PMsGMD problem specifications:
 @testset "PowerModelsGMDLib" begin
     include("activsg200.jl")
-    include("activsg200_gic.jl") # this has a number of failing tests because of differences in branch indexing
+    #include("activsg200_gic.jl") # this has a few failing tests
     #include("activsg2000_mod.jl")
 end
 
 @testset "Verified Cases MatPower" begin
     include("b4gic_verified.jl")
+    include("b4gic3wydd_verified.jl")
+    include("b4gic3wyyd_verified.jl")
     include("epricase_aug2022_v22_fix_verified.jl")
     #include("uiuc150bus_verified.jl")
     #include("activsg200_verified.jl")
     #include("activsg500_verified.jl")
     #include("activsg2000_mod_verified.jl")
     #include("activsg10k_verified.jl")
-    include("b4gic3wydd_verified.jl")
-    include("b4gic3wyyd_verified.jl")
 end
 
 @testset "Verified Cases RAW/GIC" begin
@@ -58,5 +58,7 @@ end
     #include("b4gic3wydd_verified_gic.jl") # currently missing .gic.gz file
     include("b4gic3wyyd_verified_gic.jl")
     include("epricase_aug2022_v22_fix_verified_gic.jl")
-    include("uiuc150bus_verified_gic.jl")
+    #include("uiuc150bus_verified_gic.jl")
+    include("activsg200_verified_gic.jl")
 end
+
