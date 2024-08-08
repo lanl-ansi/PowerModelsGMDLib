@@ -39,7 +39,7 @@ include("test_cases.jl")
 @testset "PowerModelsGMDLib" begin
     include("activsg200_matpower.jl")
     #include("activsg200_gic.jl") # this has a number of failing tests because of differences in branch indexing
-    #include("activsg2000_mod_matpower.jl")
+    include("activsg2000_mod_matpower.jl")
 end
 
 @testset "Verified Cases MatPower" begin
@@ -54,4 +54,6 @@ end
 
 @testset "Verified Cases RAW/GIC" begin
     include("b4gic_verified_gic.jl")
+    include("b4gic3wydd_verified.jl")
+    include("b4gic3wyyd_verified.jl")
 end
