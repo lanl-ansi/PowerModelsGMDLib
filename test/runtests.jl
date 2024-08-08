@@ -38,7 +38,7 @@ include("test_cases.jl")
 @testset "PowerModelsGMDLib" begin
     include("activsg200.jl")
     #include("activsg200_gic.jl") # this has a few failing tests
-    #include("activsg2000_mod.jl")
+    include("activsg2000_mod.jl")
 end
 
 @testset "Verified Cases MatPower" begin
@@ -46,11 +46,11 @@ end
     include("b4gic3wydd_verified.jl")
     include("b4gic3wyyd_verified.jl")
     include("epricase_aug2022_v22_fix_verified.jl")
-    #include("uiuc150bus_verified.jl")
-    #include("activsg200_verified.jl")
-    #include("activsg500_verified.jl")
-    #include("activsg2000_mod_verified.jl")
-    #include("activsg10k_verified.jl")
+    include("uiuc150bus_verified.jl")
+    include("activsg200_verified.jl")
+    include("activsg500_verified.jl")
+    include("activsg2000_mod_verified.jl")
+    include("activsg10k_verified.jl")
 end
 
 @testset "Verified Cases RAW/GIC" begin
@@ -58,7 +58,7 @@ end
     #include("b4gic3wydd_verified_gic.jl") # currently missing .gic.gz file
     include("b4gic3wyyd_verified_gic.jl")
     include("epricase_aug2022_v22_fix_verified_gic.jl")
-    #include("uiuc150bus_verified_gic.jl")
+    #include("uiuc150bus_verified_gic.jl") # currently failing
     include("activsg200_verified_gic.jl")
 end
 
