@@ -59,5 +59,5 @@ end
     #include("b4gic3wydd_verified_gic.jl") # currently missing .gic.gz file
     include("b4gic3wyyd_verified_gic.jl")
     include("epricase_aug2022_v22_fix_verified_gic.jl")
-    include("uiuc150bus_verfified_gic.jl")
+    include("uiuc150bus_verified_gic.jl")
 end
