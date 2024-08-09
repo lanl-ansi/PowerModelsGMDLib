@@ -1,28 +1,35 @@
-function parse_file(file::String; kwargs...)::Dict
-    basename, ext = lowercase(splitext(file)[end])
+function parse_files(ac_file::String, gic_file::String; kwargs...)::Dict
+    ac_basename, ac_ext = lowercase(splitext(ac_file)[end])
+    ac_data = Dict()
 
-    if ext == ".gz"
-        basename, ext = splitext(basename)
-        io = GZip.open(file)
+    if ac_ext == ".gz"
+        ac_basename, ac_ext = splitext(ac_basename)
+        io = GZip.open(ac_file)
 
-        if ext == ".gic"
-            gic_data = parse_gic(io)
-            close(io)
-            return gic_data
-        elseif ext == ".m"
-            ac_data =  PowerModels.parse_matpower(file; kwargs...)
-            close(io)
-            return ac_data
+        if ext == ".m"
+            ac_data =  PowerModels.parse_matpower(io; kwargs...)
         elseif ext == ".raw"
-            ac_data =  PowerModels.parse_raw(file; kwargs...)
-            close(io)
-            return ac_data
+            ac_data =  PowerModels.parse_raw(io; kwargs...)
         end
+
+        close(io)
+    else
+        ac_data = PowerModels.parse_file(ac_file)
     end
 
-    io = open(file)
-    return parse_gic(io)
-    close(io)
+    gic_basename, gic_ext = lowercase(splitext(gic_file)[end])
+    gic_data = Dict()
+
+    if gic_ext == ".gz"
+        gic_basename, _ = splitext(gic_basename)
+        io = GZip.open(gic_file)
+
+
+    gic_data = parse_gic(gic_file)
+    raw_data = _PM.parse_file(raw_file)
+    net =  generate_dc_data(gic_data, raw_data)
+    add_coupled_voltages!(voltage_file, net)
+    return net
 end
 
 # TODO: handle csv voltage file?
