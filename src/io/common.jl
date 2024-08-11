@@ -1,58 +1,45 @@
-function parse_files(ac_file::String, gic_file::String; kwargs...)::Dict
-    ac_basename, ac_ext = lowercase(splitext(ac_file)[end])
-    ac_data = Dict()
-
-    if ac_ext == ".gz"
-        ac_basename, ac_ext = splitext(ac_basename)
-        io = GZip.open(ac_file)
-
-        if ext == ".m"
-            ac_data =  PowerModels.parse_matpower(io; kwargs...)
-        elseif ext == ".raw"
-            ac_data =  PowerModels.parse_raw(io; kwargs...)
-        end
-
-        close(io)
-    else
-        ac_data = PowerModels.parse_file(ac_file)
-    end
-
-    gic_basename, gic_ext = lowercase(splitext(gic_file)[end])
-    gic_data = Dict()
-
-    if gic_ext == ".gz"
-        gic_basename, _ = splitext(gic_basename)
-        io = GZip.open(gic_file)
-
-
-    gic_data = parse_gic(gic_file)
-    raw_data = _PM.parse_file(raw_file)
-    net =  generate_dc_data(gic_data, raw_data)
-    add_coupled_voltages!(voltage_file, net)
+function parse_files(ac_file::String, gic_file::String, voltage_file::String; kwargs...)::Dict
+    net =  parse_files(ac_file, gic_file; kwargs...)
+    io = is_gzipped(voltage_file) ? GZip.open(voltage_file) : open(voltage_file)
+    _PMG.add_coupled_voltages!(io, net)
+    close(io)
+    # TODO: include 3W transformers function?
     return net
 end
 
-# TODO: handle csv voltage file?
-function parse_files(files::String...; kwargs...)::Dict
-    mn_data = Dict{String, Any}(
-        "nw" => Dict{String, Any}(),
-        "per_unit" => true,
-        "multinetwork" => true
-    )
+function parse_files(ac_file::String, gic_file::String; kwargs...)::Dict
+    ac_data = parse_file(ac_file; kwargs...)
 
-    names = Array{String, 1}()
+    # TODO: try function passing here?
+    io = is_gzipped(gic_file) ? GZip.open(gic_file) : open(gic_file)
+    gic_data = _PMG.parse_gic(io)
+    close(io)
 
-    for (i, filename) in enumerate(files)
-        data = parse_file(filename; kwargs...)
+    return _PMG.generate_dc_data(gic_data, ac_data)
+end
 
-        delete!(data, "multinetwork")
-        delete!(data, "per_unit")
+function parse_file(file::String; kwargs...)::Dict
+    basename = splitpath(file)[end]
+    casename, ext = splitext(lowercase(basename))
+    io = (ext == ".gz") ? GZip.open(file) : open(file)
+    casename2, ext2 = (ext == ".gz") ? splitext(casename) : (casename, ext)
+    net = (ext2 == ".raw") ? _PM.parse_psse(io; kwargs...) : _PM.parse_matpower(io; kwargs...)
+    close(io)
 
-        mn_data["nw"]["$i"] = data
-        push!(names, "$(data["name"])")
+    if !haskey(net, "name")
+        net["name"] = casename2
     end
 
-    mn_data["name"] = join(names, " + ")
-
-    return mn_data
+    return net
 end
+
+is_gzipped = filename -> lowercase(splitext(filename)[end]) == ".gz"
+
+function has_ext(filename, ext)
+    return lowercase(splitext(filename)[end]) == ext
+end
+
+get_ext = filename -> lowercase(splitext(filename)[end])
+
+
+
