@@ -1,5 +1,8 @@
+using PowerModelsGMDLib
+const _PMGLib = PowerModelsGMDLib
+
 using PowerModelsGMD
-const _PMGMD = PowerModelsGMD
+const _PMG = PowerModelsGMD
 
 import InfrastructureModels
 const _IM = InfrastructureModels
@@ -17,12 +20,12 @@ using Test
 using GZip
 
 import Memento
-Memento.setlevel!(Memento.getlogger(_PMGMD), "error")
+Memento.setlevel!(Memento.getlogger(_PMG), "error")
 Memento.setlevel!(Memento.getlogger(_IM), "error")
 Memento.setlevel!(Memento.getlogger(_PM), "error")
 
-_PMGMD.logger_config!("error")
-const TESTLOG = Memento.getlogger(_PMGMD)
+_PMG.logger_config!("error")
+const TESTLOG = Memento.getlogger(_PMG)
 Memento.setlevel!(TESTLOG, "error")
 
 ipopt_solver = JuMP.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "print_level" => 0, "sb" => "yes")
@@ -40,22 +43,9 @@ close(io)
 raw_file = "../data/verified_cases/Epri/epricase_aug2022_v22_fix.raw.gz" 
 gic_file = "../data/verified_cases/Epri/epricase_aug2022_v22_fix.gic.gz" 
 csv_file = "../data/verified_cases/Epri/epricase_aug2022_v22_fix_gic_lines.csv.gz" 
-
-raw_io = GZip.open(raw_file)
-gic_io = GZip.open(gic_file)
-csv_io = GZip.open(csv_file)
-
-sol = _PMGMD.solve_gmd(raw_io, gic_io, csv_io)
-
-close(raw_io)
-close(gic_io)
-close(csv_io)
-
-sol= _PMGMD.solve_gmd(case) # linear solver
-# sol=  _PMGMD.solve_gmd(case, ipopt_solver; setting=setting) # for opt solver
+sol = _PMGLib.solve_gmd(raw_file, gic_file, csv_file) # linear solver
 
 high_error = 1e-2 # abs(value) >= .0001
-
 low_error = 1 # abs(value) < .0001
 
 @testset "Verified EPRI Aug 2022 v22 solve of GMD" begin

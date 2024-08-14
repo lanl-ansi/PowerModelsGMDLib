@@ -19,3 +19,15 @@ Derived datasets are compressed with `gzip` using the `--rsyncable` option. Deri
 - JSON modification files that include equivalent dc networks needed for GIC analysis
 - Extended MatPower cases with equivalent dc networks needed for GIC analysis
 - GIS information 
+
+TODO
+- [ ] fix v3/v4 issues with one .gic file
+- [ ] fix missing .csv issues with one case
+- [ ] add citations
+- [ ] cleanup PowerModelsGMDLib.jl
+- [ ] merge develop into master
+- [ ] tag version
+- [ ] add tests for large cases, at least for parser
+- [ ] add GIS for verified cases
+- [ ] merge verified cases into root folder
+
