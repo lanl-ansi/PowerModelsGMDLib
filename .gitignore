@@ -1,1 +1,16 @@
+# uncompressed test case data
+*.pwb
+*.PWB
+*.pwd
+*.PWD
+*.raw
+*.gic
+*.m
+*.json
+*.geojson
+*.csv
+
+# temp files
+*.swp
+
 .dupver/
