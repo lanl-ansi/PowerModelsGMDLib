@@ -36,10 +36,8 @@ using Test
 include("test_cases.jl")
 # Perform automated testing of PMsGMD problem specifications:
 @testset "PowerModelsGMDLib Cases MatPower" begin
-    # disable large cases
-    # include("activsg200.jl") # missing .m file
-    # include("activsg2000_mod.jl")
-    # include("activsg200_gic.jl") # this has a few failing tests
+    include("activsg200.jl") 
+    include("activsg2000_mod.jl")
 end
 
 @testset "Verified Cases MatPower" begin
@@ -56,6 +54,7 @@ end
 
 @testset "Verified Cases GIC" begin
     include("parse.jl")
+    include("activsg200_gic.jl") # this has a few failing tests
 end
 
 @testset "Verified Cases RAW/GIC" begin
