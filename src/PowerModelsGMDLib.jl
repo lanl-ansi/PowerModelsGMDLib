@@ -5,8 +5,8 @@ const _PMGLib = PowerModelsGMDLib
     const _IM = InfrastructureModels
     import PowerModels
     const _PM = PowerModels
-    import PowerModelsRestoration
-    const _PMR = PowerModelsRestoration
+    # import PowerModelsRestoration
+    # const _PMR = PowerModelsRestoration
     import PowerModelsGMD
     const _PMG = PowerModelsGMD
 

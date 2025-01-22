@@ -49,7 +49,7 @@ csv_io = GZip.open(csv_file)
 raw_data = PowerModels.parse_psse(raw_io)
 gic_data = PowerModelsGMD.parse_gic(gic_io)
 case = PowerModelsGMD.generate_dc_data(gic_data, raw_data)
-PowerModelsGMD.load_voltages!(csv_io, case)
+PowerModelsGMD.add_coupled_voltages!(csv_io, case)
 
 close(raw_io)
 close(gic_io)
