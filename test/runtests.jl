@@ -38,7 +38,14 @@ include("test_cases.jl")
 @testset "PowerModelsGMDLib Cases MatPower" begin
     include("activsg200.jl") 
     include("activsg2000_mod.jl")
+    include("circulating_case.jl")
+    include("circulating_case_uniform_field.jl")
 end
+
+# @testset "PowerModelsGMDLib Cases RAW/GIC" begin
+#     include("circulating_case_gic.jl")
+#     include("circulating_case_uniform_field_gic.jl")
+# end
 
 @testset "Verified Cases MatPower" begin
     include("b4gic_verified.jl")

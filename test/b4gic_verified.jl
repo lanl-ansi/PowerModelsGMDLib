@@ -16,8 +16,8 @@ import Ipopt
 import Juniper
 import LinearAlgebra
 import SparseArrays
-using Test
 using GZip
+using Test
 import Memento
 
 Memento.setlevel!(Memento.getlogger(_PMG), "error")

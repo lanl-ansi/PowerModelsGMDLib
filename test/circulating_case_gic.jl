@@ -1,6 +1,3 @@
-using PowerModelsGMDLib
-const _PMGLib = PowerModelsGMDLib
-
 using PowerModelsGMD
 const _PMGMD = PowerModelsGMD
 
@@ -16,6 +13,7 @@ import Ipopt
 import Juniper
 import LinearAlgebra
 import SparseArrays
+using GZip
 using Test
 import Memento
 
@@ -31,8 +29,21 @@ ipopt_solver = JuMP.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "p
 juniper_solver = JuMP.optimizer_with_attributes(Juniper.Optimizer, "nl_solver" => _PM.optimizer_with_attributes(Ipopt.Optimizer, "tol" => 1e-4, "print_level" => 0, "sb" => "yes"), "log_levels" => [])
 setting = Dict{String,Any}("output" => Dict{String,Any}("branch_flows" => true))
 
-file =  "../data/circulating_case/circulating_case.m.gz"
-sol= _PMGLib.solve_gmd(file) # linear solver
+# file =  "../data/CirculatingCase/circulating_case.m.gz"
+# sol= _PMGMD.solve_gmd(file) # linear solver
+
+raw_file = "../data/circulating_case/circulating_case.raw.gz" 
+gic_file = "../data/circulating_case/circulating_case.gic.gz" 
+csv_file = "../data/circulating_case/circulating_case.csv.gz" 
+raw_io = GZip.open(raw_file)
+gic_io = GZip.open(gic_file)
+csv_io = GZip.open(csv_file)
+
+sol = _PMGMD.solve_gmd(raw_io, gic_io, csv_io)
+
+close(raw_io)
+close(gic_io)
+close(csv_io)
 
 high_error = 1e-2 # abs(value) >= .0001
 low_error = 1 # abs(value) < .0001

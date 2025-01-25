@@ -12,6 +12,9 @@
 
 # temp files
 *.swp
+*.bak
 
 .dupver/
+.pyver/
+.pyver_ignore
 Manifest.toml
